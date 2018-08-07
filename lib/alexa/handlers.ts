@@ -1,4 +1,6 @@
 import { RequestHandler } from "ask-sdk-core";
+import { discomfortIndex } from "../temperature";
+import DynamoDB = require("aws-sdk/clients/dynamodb");
 
 const skillName = "Thermometer";
 
@@ -10,8 +12,13 @@ export const GetTempIntentHandler: RequestHandler = {
       request.intent.name === "GetTempIntent"
     );
   },
-  handle(handlerInput) {
-    const { point, hour, min, temp, humid } = dummyData();
+  async handle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    if (request.type!=='IntentRequest'){
+      throw new Error('')
+    }
+    // const p = request.intent.slots.point.value || 'tokyo';
+    const {point, hour, min, temp, humid} = await fetchData("tokyo");
     const index = discomfortIndex(temp, humid);
     const feel = feeling(index);
     const text =
@@ -46,12 +53,37 @@ const feeling = (index: number) => {
   }
 };
 
-const dummyData = () => {
-  const point = "Tokyo";
-  const hour = 12;
-  const min = 34;
-  const temp = 23.4;
-  const humid = 56;
+let doc: DynamoDB.DocumentClient;
 
-  return { point, hour, min, temp, humid };
+const fetchData = async (point: string) => {
+  if (!doc) {
+    doc = new DynamoDB.DocumentClient({region: 'ap-northeast-1'})
+  }
+  const now = (new Date()).getTime() / 1000;
+  const data = await doc.query({
+      TableName: "tf-temp-log",
+      KeyConditionExpression: "#p = :p AND #t < :t",
+      ExpressionAttributeNames: {
+        "#p": "point_name",
+        "#t": "timestamp",
+      },
+      ExpressionAttributeValues: {
+        ":p": point,
+        ":t": now,
+      },
+      ScanIndexForward: false, // desc
+      Limit: 1,
+    })
+    .promise();
+  const item = data.Items[0];
+
+  const datetime = new Date(Number.parseInt(item.timestamp));
+
+  return {
+    point,
+    hour: datetime.getHours(),
+    min: datetime.getMinutes(),
+    temp: item.temperature,
+    humid: item.humidity,
+  };
 };
