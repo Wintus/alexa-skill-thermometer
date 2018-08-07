@@ -1,6 +1,5 @@
 import 'source-map-support/register'
 import Alexa = require("ask-sdk-core");
-import { RequestHandler, HandlerInput } from "ask-sdk-core";
 import { RequestEnvelope } from "ask-sdk-model";
 import { Callback, Context, Handler } from "aws-lambda";
 
