@@ -1,0 +1,8 @@
+{
+  "request": {
+    "type": "IntentRequest",
+    "intent": {
+      "name": "GetTempIntent"
+    }
+  }
+}
