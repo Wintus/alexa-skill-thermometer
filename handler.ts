@@ -14,14 +14,19 @@ export const handler: Handler = (
 ) => {
   if (!skill) {
     skill = Alexa.SkillBuilders.custom()
-      .addRequestHandlers(dummyHandler)
+      .addRequestHandlers(LaunchRequestHandler)
       .create();
   }
   return skill.invoke(event);
 };
 
-const dummyHandler: RequestHandler = {
-  canHandle: (_handlerInput: HandlerInput) => true, // catch all
-  handle: (handlerInput: HandlerInput) =>
-    handlerInput.responseBuilder.speak("ダミー").getResponse()
+const LaunchRequestHandler = {
+  canHandle: handlerInput => handlerInput.requestEnvelope.request.type === 'LaunchRequest',
+  handle: handlerInput => {
+    const re_prompt = '今の温度をたずねるには、「アレクサ、温度計で今の温度を教えて」と話しかけてください。';
+    return handlerInput.responseBuilder
+      .speak(re_prompt)
+      .reprompt(re_prompt)
+      .getResponse();
+  }
 };
