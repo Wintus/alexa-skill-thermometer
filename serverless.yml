@@ -9,6 +9,10 @@ provider:
   runtime: nodejs8.10
   region: ap-northeast-1
 
+custom:
+  webpack:
+    packager: yarn
+
 functions:
   hello:
     handler: handler.hello
