@@ -1,0 +1,21 @@
+{
+  "name": "alexa-skill-thermometer",
+  "version": "0.0.1",
+  "description": "Alexa Skill for temprature",
+  "repository": "https://github.com/Wintus/alexa-skill-thermometer.git",
+  "author": "wintus <yuya0726+GitHub@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "8.10.1",
+    "@types/node": "^8.0.57",
+    "serverless-webpack": "^5.1.1",
+    "ts-loader": "^4.2.0",
+    "typescript": "^2.8.1",
+    "webpack": "^4.5.0"
+  }
+}
