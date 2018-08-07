@@ -1,0 +1,21 @@
+{
+  "request": {
+    "type": "IntentRequest",
+    "intent": {
+      "name": "DiscomfortIndex",
+      "confirmationStatus": "NONE",
+      "slots": {
+        "temperature": {
+          "name": "temperature",
+          "value": "23.4",
+          "confirmationStatus": "NONE"
+        },
+        "humidity": {
+          "name": "humidity",
+          "value": "56",
+          "confirmationStatus": "NONE"
+        }
+      }
+    }
+  }
+}
