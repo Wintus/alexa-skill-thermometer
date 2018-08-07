@@ -8,6 +8,7 @@ provider:
   name: aws
   runtime: nodejs8.10
   region: ap-northeast-1
+  memorySize: 128 # min
 
 custom:
   webpack:
