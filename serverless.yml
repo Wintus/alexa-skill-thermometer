@@ -15,9 +15,7 @@ custom:
     packager: yarn
 
 functions:
-  hello:
-    handler: handler.hello
+  AlexaSkill:
+    handler: handler.handler
     events:
-      - http:
-          method: get
-          path: hello
+      - alexaSkill: alexa-appkit.amazon.com # unspecified

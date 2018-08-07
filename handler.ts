@@ -1,13 +1,27 @@
-import { APIGatewayEvent, Callback, Context, Handler } from 'aws-lambda';
+import 'source-map-support/register'
+import Alexa = require("ask-sdk-core");
+import { RequestHandler, HandlerInput } from "ask-sdk-core";
+import { RequestEnvelope } from "ask-sdk-model";
+import { Callback, Context, Handler } from "aws-lambda";
 
-export const hello: Handler = (event: APIGatewayEvent, context: Context, cb: Callback) => {
-  const response = {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: 'Go Serverless Webpack (Typescript) v1.0! Your function executed successfully!',
-      input: event,
-    }),
-  };
+// singleton
+let skill: Alexa.Skill;
 
-  cb(null, response);
-}
+export const handler: Handler = (
+  event: RequestEnvelope,
+  _ctx: Context,
+  _cb: Callback
+) => {
+  if (!skill) {
+    skill = Alexa.SkillBuilders.custom()
+      .addRequestHandlers(dummyHandler)
+      .create();
+  }
+  return skill.invoke(event);
+};
+
+const dummyHandler: RequestHandler = {
+  canHandle: (_handlerInput: HandlerInput) => true, // catch all
+  handle: (handlerInput: HandlerInput) =>
+    handlerInput.responseBuilder.speak("ダミー").getResponse()
+};
