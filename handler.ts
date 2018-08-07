@@ -29,11 +29,12 @@ const LaunchRequestHandler = {
   canHandle: handlerInput =>
     handlerInput.requestEnvelope.request.type === "LaunchRequest",
   handle: handlerInput => {
-    const re_prompt =
+    const speechText =
       "今の温度をたずねるには、「アレクサ、温度計で今の温度を教えて」と話しかけてください。";
     return handlerInput.responseBuilder
-      .speak(re_prompt)
-      .reprompt(re_prompt)
+      .speak(speechText)
+      .reprompt(speechText)
+      .withSimpleCard(skillName, speechText)
       .getResponse();
   }
 };
