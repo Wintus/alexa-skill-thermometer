@@ -144,7 +144,7 @@ const fetchData = async (point: string) => {
   }
   const now = (new Date()).getTime() / 1000;
   const data = await doc.query({
-      TableName: "tf-temp-log",
+      TableName: "tf_temp_log",
       KeyConditionExpression: "#p = :p AND #t < :t",
       ExpressionAttributeNames: {
         "#p": "point_name",
