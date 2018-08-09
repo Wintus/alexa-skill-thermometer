@@ -160,7 +160,7 @@ const fetchData = async (point: string) => {
     .promise();
   const item = data.Items[0];
 
-  const datetime = new Date(Number.parseInt(item.timestamp));
+  const datetime = new Date(Number.parseInt(item.timestamp) * 1000);
 
   return {
     point,
