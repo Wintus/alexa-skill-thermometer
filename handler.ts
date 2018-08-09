@@ -100,8 +100,8 @@ const GetTempIntentHandler: Alexa.RequestHandler = {
     if (request.type !== "IntentRequest") {
       throw new Error("invalid request");
     }
-    // const p = request.intent.slots.point.value || 'tokyo';
-    const { point, hour, min, temp, humid } = await fetchData("tokyo");
+    const point = "tokyo";
+    const { hour, min, temp, humid } = await fetchData(point);
     const index = discomfortIndex(temp, humid);
     const feel = feeling(index);
     const text = `${point}の${hour}時${min}分現在の温度は${temp}度、湿度は${humid}%です。不快指数は${index}です。${feel}`;
