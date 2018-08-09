@@ -9,6 +9,8 @@ provider:
   runtime: nodejs8.10
   region: ap-northeast-1
   memorySize: 128 # min
+  iamManagedPolicies:
+    - arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess
 
 custom:
   webpack:
