@@ -11,10 +11,11 @@ const skillName = "Thermometer";
 // singleton
 let skill: Alexa.Skill;
 
+// noinspection JSUnusedGlobalSymbols, JSUnusedLocalSymbols
 export const handler: Handler = (
   event: RequestEnvelope,
   _ctx: Context,
-  _cb: Callback
+  _cb: Callback,
 ) => {
   if (!skill) {
     skill = Alexa.SkillBuilders.custom()
@@ -22,7 +23,7 @@ export const handler: Handler = (
         LaunchRequestHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
-        GetTempIntentHandler
+        GetTempIntentHandler,
       )
       .create();
   }
@@ -40,7 +41,7 @@ const LaunchRequestHandler = {
       .reprompt(speechText)
       .withSimpleCard(skillName, speechText)
       .getResponse();
-  }
+  },
 };
 
 const HelpIntentHandler = {
@@ -59,7 +60,7 @@ const HelpIntentHandler = {
       .reprompt(speechText)
       .withSimpleCard(skillName, speechText)
       .getResponse();
-  }
+  },
 };
 
 const CancelAndStopIntentHandler = {
@@ -76,14 +77,14 @@ const CancelAndStopIntentHandler = {
     const speech = new Speech();
     speech.sayAs({
       word: speechText,
-      interpret: "interjection"
+      interpret: "interjection",
     });
 
     return handlerInput.responseBuilder
       .speak(speech.ssml(true))
       .withSimpleCard(skillName, speechText)
       .getResponse();
-  }
+  },
 };
 
 const GetTempIntentHandler: Alexa.RequestHandler = {
@@ -96,22 +97,20 @@ const GetTempIntentHandler: Alexa.RequestHandler = {
   },
   async handle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
-    if (request.type!=='IntentRequest'){
-      throw new Error('')
+    if (request.type !== "IntentRequest") {
+      throw new Error("invalid request");
     }
-    // const p = request.intent.slots.point.value || 'tokyo';
-    const {point, hour, min, temp, humid} = await fetchData("tokyo");
+    const point = "tokyo";
+    const { hour, min, temp, humid } = await fetchData(point);
     const index = discomfortIndex(temp, humid);
     const feel = feeling(index);
-    const text =
-      `${point}の${hour}時${min}分現在の温度は${temp}度、湿度は${humid}%です。` +
-      `不快指数は${index}です。${feel}`;
+    const text = `${point}の${hour}時${min}分現在の温度は${temp}度、湿度は${humid}%です。不快指数は${index}です。${feel}`;
 
     return handlerInput.responseBuilder
       .speak(text)
       .withSimpleCard(skillName, text)
       .getResponse();
-  }
+  },
 };
 
 // index = discomfort index
@@ -139,9 +138,10 @@ let doc: DynamoDB.DocumentClient;
 
 const fetchData = async (point: string) => {
   if (!doc) {
-    doc = new DynamoDB.DocumentClient({region: 'ap-northeast-1'})
+    doc = new DynamoDB.DocumentClient({ region: "ap-northeast-1" });
   }
-  const data = await doc.query({
+  const data = await doc
+    .query({
       TableName: "tf_temp_log",
       KeyConditionExpression: "#p = :p",
       ExpressionAttributeNames: {
