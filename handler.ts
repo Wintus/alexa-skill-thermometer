@@ -11,11 +11,8 @@ const skillName = "Thermometer";
 // singleton
 let skill: Alexa.Skill;
 
-export const handler: Handler = (
-  event: RequestEnvelope,
-  _ctx: Context,
-  _cb: Callback
-) => {
+// noinspection JSUnusedGlobalSymbols, JSUnusedLocalSymbols
+export const handler: Handler = (event: RequestEnvelope, _ctx: Context, _cb: Callback) => {
   if (!skill) {
     skill = Alexa.SkillBuilders.custom()
       .addRequestHandlers(
