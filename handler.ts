@@ -142,17 +142,14 @@ const fetchData = async (point: string) => {
   if (!doc) {
     doc = new DynamoDB.DocumentClient({region: 'ap-northeast-1'})
   }
-  const now = (new Date()).getTime() / 1000;
   const data = await doc.query({
       TableName: "tf_temp_log",
-      KeyConditionExpression: "#p = :p AND #t < :t",
+      KeyConditionExpression: "#p = :p",
       ExpressionAttributeNames: {
         "#p": "point_name",
-        "#t": "timestamp",
       },
       ExpressionAttributeValues: {
         ":p": point,
-        ":t": now,
       },
       ScanIndexForward: false, // desc
       Limit: 1,
