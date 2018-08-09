@@ -21,3 +21,5 @@ functions:
     handler: handler.handler
     events:
       - alexaSkill: alexa-appkit.amazon.com # unspecified
+    environment:
+      TZ: Asia/Tokyo
