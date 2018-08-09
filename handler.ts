@@ -1,6 +1,5 @@
 import "source-map-support/register";
 import Alexa = require("ask-sdk-core");
-import { RequestHandler } from "ask-sdk-core";
 import { RequestEnvelope } from "ask-sdk-model";
 import { Callback, Context, Handler } from "aws-lambda";
 import { discomfortIndex } from "./lib/temperature";
@@ -87,7 +86,7 @@ const CancelAndStopIntentHandler = {
   }
 };
 
-const GetTempIntentHandler: RequestHandler = {
+const GetTempIntentHandler: Alexa.RequestHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
     return (
