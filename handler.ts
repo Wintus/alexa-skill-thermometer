@@ -93,8 +93,8 @@ const GetTempIntentHandler: Alexa.RequestHandler = {
   },
   async handle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
-    if (request.type!=='IntentRequest'){
-      throw new Error('')
+    if (request.type !== "IntentRequest") {
+      throw new Error("invalid request");
     }
     // const p = request.intent.slots.point.value || 'tokyo';
     const {point, hour, min, temp, humid} = await fetchData("tokyo");
