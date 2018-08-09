@@ -2,6 +2,7 @@ import "source-map-support/register";
 import Alexa = require("ask-sdk-core");
 import { RequestEnvelope } from "ask-sdk-model";
 import { Callback, Context, Handler } from "aws-lambda";
+import Speech = require("ssml-builder");
 
 const skillName = "Thermometer";
 
@@ -69,9 +70,14 @@ const CancelAndStopIntentHandler = {
   },
   handle(handlerInput) {
     const speechText = "さようなら";
+    const speech = new Speech();
+    speech.sayAs({
+      word: speechText,
+      interpret: "interjection"
+    });
 
     return handlerInput.responseBuilder
-      .speak(speechText)
+      .speak(speech.ssml(true))
       .withSimpleCard(skillName, speechText)
       .getResponse();
   }
