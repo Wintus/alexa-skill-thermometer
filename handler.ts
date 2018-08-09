@@ -12,14 +12,18 @@ const skillName = "Thermometer";
 let skill: Alexa.Skill;
 
 // noinspection JSUnusedGlobalSymbols, JSUnusedLocalSymbols
-export const handler: Handler = (event: RequestEnvelope, _ctx: Context, _cb: Callback) => {
+export const handler: Handler = (
+  event: RequestEnvelope,
+  _ctx: Context,
+  _cb: Callback,
+) => {
   if (!skill) {
     skill = Alexa.SkillBuilders.custom()
       .addRequestHandlers(
         LaunchRequestHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
-        GetTempIntentHandler
+        GetTempIntentHandler,
       )
       .create();
   }
@@ -37,7 +41,7 @@ const LaunchRequestHandler = {
       .reprompt(speechText)
       .withSimpleCard(skillName, speechText)
       .getResponse();
-  }
+  },
 };
 
 const HelpIntentHandler = {
@@ -56,7 +60,7 @@ const HelpIntentHandler = {
       .reprompt(speechText)
       .withSimpleCard(skillName, speechText)
       .getResponse();
-  }
+  },
 };
 
 const CancelAndStopIntentHandler = {
@@ -73,14 +77,14 @@ const CancelAndStopIntentHandler = {
     const speech = new Speech();
     speech.sayAs({
       word: speechText,
-      interpret: "interjection"
+      interpret: "interjection",
     });
 
     return handlerInput.responseBuilder
       .speak(speech.ssml(true))
       .withSimpleCard(skillName, speechText)
       .getResponse();
-  }
+  },
 };
 
 const GetTempIntentHandler: Alexa.RequestHandler = {
@@ -97,7 +101,7 @@ const GetTempIntentHandler: Alexa.RequestHandler = {
       throw new Error("invalid request");
     }
     // const p = request.intent.slots.point.value || 'tokyo';
-    const {point, hour, min, temp, humid} = await fetchData("tokyo");
+    const { point, hour, min, temp, humid } = await fetchData("tokyo");
     const index = discomfortIndex(temp, humid);
     const feel = feeling(index);
     const text =
@@ -108,7 +112,7 @@ const GetTempIntentHandler: Alexa.RequestHandler = {
       .speak(text)
       .withSimpleCard(skillName, text)
       .getResponse();
-  }
+  },
 };
 
 // index = discomfort index
@@ -136,9 +140,10 @@ let doc: DynamoDB.DocumentClient;
 
 const fetchData = async (point: string) => {
   if (!doc) {
-    doc = new DynamoDB.DocumentClient({region: 'ap-northeast-1'})
+    doc = new DynamoDB.DocumentClient({ region: "ap-northeast-1" });
   }
-  const data = await doc.query({
+  const data = await doc
+    .query({
       TableName: "tf_temp_log",
       KeyConditionExpression: "#p = :p",
       ExpressionAttributeNames: {
