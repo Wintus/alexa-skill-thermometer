@@ -1,6 +1,5 @@
 import "source-map-support/register";
 import Alexa = require("ask-sdk-core");
-import { RequestHandler } from "ask-sdk-core";
 import { RequestEnvelope } from "ask-sdk-model";
 import { Callback, Context, Handler } from "aws-lambda";
 import { discomfortIndex } from "./lib/temperature";
@@ -87,7 +86,7 @@ const CancelAndStopIntentHandler = {
   }
 };
 
-const GetTempIntentHandler: RequestHandler = {
+const GetTempIntentHandler: Alexa.RequestHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
     return (
@@ -142,17 +141,14 @@ const fetchData = async (point: string) => {
   if (!doc) {
     doc = new DynamoDB.DocumentClient({region: 'ap-northeast-1'})
   }
-  const now = (new Date()).getTime() / 1000;
   const data = await doc.query({
       TableName: "tf_temp_log",
-      KeyConditionExpression: "#p = :p AND #t < :t",
+      KeyConditionExpression: "#p = :p",
       ExpressionAttributeNames: {
         "#p": "point_name",
-        "#t": "timestamp",
       },
       ExpressionAttributeValues: {
         ":p": point,
-        ":t": now,
       },
       ScanIndexForward: false, // desc
       Limit: 1,
