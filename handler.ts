@@ -1,34 +1,17 @@
 import "source-map-support/register";
-import Alexa = require("ask-sdk-core");
-import { RequestEnvelope } from "ask-sdk-model";
-import { Callback, Context, Handler } from "aws-lambda";
+import { Handler } from "aws-lambda";
+import { DynamoDB } from "aws-sdk";
+import { RequestEnvelope, ResponseEnvelope } from "ask-sdk-model";
 import { discomfortIndex } from "./lib/temperature";
+import Alexa = require("ask-sdk-core");
 import Speech = require("ssml-builder");
-import DynamoDB = require("aws-sdk/clients/dynamodb");
 
 const skillName = "Thermometer";
 
-// singleton
-let skill: Alexa.Skill;
-
-// noinspection JSUnusedGlobalSymbols, JSUnusedLocalSymbols
-export const handler: Handler = (
-  event: RequestEnvelope,
-  _ctx: Context,
-  _cb: Callback,
-) => {
-  if (!skill) {
-    skill = Alexa.SkillBuilders.custom()
-      .addRequestHandlers(
-        LaunchRequestHandler,
-        HelpIntentHandler,
-        CancelAndStopIntentHandler,
-        GetTempIntentHandler,
-      )
-      .create();
-  }
-  return skill.invoke(event);
-};
+export const handler: Handler<
+  RequestEnvelope,
+  ResponseEnvelope
+> = async event => await skill.invoke(event);
 
 const LaunchRequestHandler = {
   canHandle: handlerInput =>
@@ -134,12 +117,9 @@ const feeling = (index: number) => {
   }
 };
 
-let doc: DynamoDB.DocumentClient;
+const doc = new DynamoDB.DocumentClient({ region: "ap-northeast-1" });
 
 const fetchData = async (point: string) => {
-  if (!doc) {
-    doc = new DynamoDB.DocumentClient({ region: "ap-northeast-1" });
-  }
   const data = await doc
     .query({
       TableName: "tf_temp_log",
@@ -159,10 +139,19 @@ const fetchData = async (point: string) => {
   const datetime = new Date(Number.parseInt(item.timestamp) * 1000);
 
   return {
-    point,
     hour: datetime.getHours(),
     min: datetime.getMinutes(),
     temp: item.temperature,
     humid: item.humidity,
   };
 };
+
+// reuse
+const skill: Alexa.Skill = Alexa.SkillBuilders.custom()
+  .addRequestHandlers(
+    LaunchRequestHandler,
+    HelpIntentHandler,
+    CancelAndStopIntentHandler,
+    GetTempIntentHandler,
+  )
+  .create();
