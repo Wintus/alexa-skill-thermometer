@@ -76,7 +76,7 @@ const GetTempIntentHandler: RequestHandler = {
       throw new Error("invalid request");
     }
 
-    const point = "tokyo";
+    const point = getPoint(request);
     const { hour, min, temp, humid } = await fetchData(point);
     const index = discomfortIndex(temp, humid);
     const feel = feeling(index);
@@ -88,6 +88,14 @@ const GetTempIntentHandler: RequestHandler = {
       .withSimpleCard(skillName, text)
       .getResponse();
   },
+};
+
+// TODO
+const getPoint = request => {
+  if (request) {
+    // ok
+  }
+  return "tokyo";
 };
 
 // index = discomfort index
